@@ -1,7 +1,7 @@
 <template>
   <v-app>
   <div id="app">
-    <router-view v-on:logged-in='loggedIn'/>
+    <router-view v-on:logged-in='loggedIn' v-on:logged-out='loggedOut' v-bind:token="this.token" />
   </div>
 </v-app>
 </template>
@@ -12,17 +12,18 @@
   data(){
     return{
       token:'',
-      headers: {}
+      headers:''
     }
   },
   methods:{
     loggedIn(token){
-      //Save token and set up headers for further requests
+      //Save token;
       this.token = token;
-      this.headers = {
-        'Authorization': `Token ${token}`
-      }
-    }
+    },
+    loggedOut(){
+      //Remove token
+      this.token = '';
+    }   
   }
 }
 </script>
