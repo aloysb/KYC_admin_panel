@@ -8,8 +8,8 @@
             <v-text-field v-model='password' label='Password' :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :type="show1 ? 'text' : 'password'" required @click:append="show1 = !show1">
             </v-text-field>
             <v-alert type ='error' v-if="badCredentials==true"> Wrong credentials. Please check your login details</v-alert>
-            <div class = 'text-center mt-5'>
-            <v-btn @click='submit'>
+            <div class = 'mt-5'>
+            <v-btn @click='submit' color='primary'>
                 Login
             </v-btn>
           </div>
