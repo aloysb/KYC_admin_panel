@@ -1,0 +1,2 @@
+=> When creating a user that does already exists error 401.
+Maybe needs a better error down the track for the user to know what is going on
