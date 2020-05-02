@@ -1,10 +1,31 @@
 <template>
   <v-app>
   <div id="app">
-    <router-view/>
+    <router-view v-on:logged-in='loggedIn'/>
   </div>
 </v-app>
 </template>
+
+<script>
+  export default{
+  name: 'App',
+  data(){
+    return{
+      token:'',
+      headers: {}
+    }
+  },
+  methods:{
+    loggedIn(token){
+      //Save token and set up headers for further requests
+      this.token = token;
+      this.headers = {
+        'Authorization': `Token ${token}`
+      }
+    }
+  }
+}
+</script>
 
 <style lang="scss">
 #app {

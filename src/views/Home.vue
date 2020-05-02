@@ -1,7 +1,7 @@
 <template>
   <div>
   <h1>login Page</h1>
-  <Login />
+  <Login v-on:logged-in='loggedIn'/>
 </div>
 </template>
 
@@ -13,6 +13,12 @@ export default {
   name: 'Home',
   components: {
     Login
+  },
+  methods:{
+    loggedIn(token){
+      //Pass the token up to the App for shared State.
+      this.$emit('logged-in', token)
+    }
   }
 }
 </script>

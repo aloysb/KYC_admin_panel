@@ -28,18 +28,30 @@ export default {
             email: '',
             password: '',
             badCredentials: false,
+            data:'',
         }
     },
 
     methods: {
         submit() {
             this.badCredentials = false;
+
             axios.post('https://kyc.to.wtf/api/admin/login',{ "email": this.email,
               "password": this.password})
-              .then(res => console.log('TOKEN ' + res.data.token))
+                //Check status code. If OK, save in state.
+              .then(res => {
+                if(res.data.code != 200) throw Error;
+                this.saveJWT(res.data.token)
+              })
+              //redirect to dashboard
+                .then(() => {this.$router.push('dashboard')})
+                //WRONG - CREDENTIALS
               .catch(err => {
                 console.log(err);
                 this.badCredentials = true});
+        },
+        saveJWT(token){
+            this.$emit('logged-in', token);
         }
     }
 }
