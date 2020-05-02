@@ -1,5 +1,5 @@
 <template>
-    <v-col cols='6'>
+    <v-col cols='6' class = 'mx-auto'>
         <v-form class = 'elevation-7 pa-12 form'>
             <h1>Hello,</h1>
             <h2>Please login to access the admin panel</h2>
