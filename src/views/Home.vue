@@ -1,23 +1,18 @@
 <template>
-  <div>
-  <Login v-on:logged-in='loggedIn'/>
-</div>
+  <div class="home">
+    <img alt="Vue logo" src="../assets/logo.png">
+    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import Login from '@/components/Login';
+import HelloWorld from '@/components/HelloWorld.vue'
 
 export default {
   name: 'Home',
   components: {
-    Login
-  },
-  methods:{
-    loggedIn(token){
-      //Pass the token up to the App for shared State.
-      this.$emit('logged-in', token)
-    }
+    HelloWorld
   }
 }
 </script>

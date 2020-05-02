@@ -1,32 +1,12 @@
 <template>
-  <v-app>
   <div id="app">
-    <router-view v-on:logged-in='loggedIn' v-on:logged-out='loggedOut' v-bind:token="this.token" />
+    <div id="nav">
+      <router-link to="/">Home</router-link> |
+      <router-link to="/about">About</router-link>
+    </div>
+    <router-view/>
   </div>
-</v-app>
 </template>
-
-<script>
-  export default{
-  name: 'App',
-  data(){
-    return{
-      token:'',
-      headers:''
-    }
-  },
-  methods:{
-    loggedIn(token){
-      //Save token;
-      this.token = token;
-    },
-    loggedOut(){
-      //Remove token
-      this.token = '';
-    }   
-  }
-}
-</script>
 
 <style lang="scss">
 #app {
@@ -48,6 +28,5 @@
       color: #42b983;
     }
   }
-
 }
 </style>
