@@ -1,6 +1,5 @@
 <template>
   <div>
-  <h1>login Page</h1>
   <Login v-on:logged-in='loggedIn'/>
 </div>
 </template>
