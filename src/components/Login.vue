@@ -4,9 +4,9 @@
         <v-form class = 'elevation-7 pa-12 form white'>
             <h1 class='text-left display-3 pb-2'>Hello !</h1>
             <h2 class='text-left mb-3 pl-1 grey--text text--darken-2 font-weight-thin'>Please login to access the admin panel</h2>
-            <v-text-field v-model='email' label='Email' required clearable>
+            <v-text-field v-model='email' label='Email' required clearable autocomplete>
             </v-text-field>
-            <v-text-field v-model='password' label='Password' :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :type="show1 ? 'text' : 'password'" required @click:append="show1 = !show1">
+            <v-text-field v-model='password' label='Password' :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :type="show1 ? 'text' : 'password'" required @click:append="show1 = !show1" autocomplete>
             </v-text-field>
             <v-alert type ='error' v-if="badCredentials==true"> Wrong credentials. Please check your login details</v-alert>
             <div class = 'mt-5'>
