@@ -22,7 +22,26 @@
                 </v-card>
             </v-dialog>
         </v-row>
-        <v-data-table :items='this.users' :headers='this.headers'>
+        <v-data-table 
+          :items='this.users' 
+          :headers='this.dataHeaders' 
+          
+        >
+        <template v-slot:item.actions="{ item }">
+      <v-icon
+        small
+        class="mr-2"
+        @click="approveUser(item)"
+      >
+        mdi-account-check 
+      </v-icon>
+      <v-icon
+        small
+        @click="rejectUser(item)"
+      >
+        mdi-account-cancel
+      </v-icon>
+    </template>
         </v-data-table>
     </div>
 </template>
@@ -48,7 +67,7 @@ export default {
                 "last_name": ""
             },
             newUserForm: false,
-            headers: [
+            dataHeaders: [
               {
                 text: 'First Name',
                 value: 'first_name'
@@ -63,7 +82,10 @@ export default {
                 value: 'email'
               },{
                 text: 'Status',
-                passed: 'passed'
+                value: 'passed'
+              },{
+                text: 'Action',
+                value: 'actions'
               }
             ]
         }
@@ -90,7 +112,22 @@ export default {
                     //Fetch the users again.
                     this.getAllUsers()
                 })
+        },
+        approveUser(user){
+          const approvedUser = {
+            "email": `${user.email}`,
+            "status": "approved",
+            "rejected_reason": ""
+          }
+
+          axios.put('https://kyc.to.wtf/api/admin/kyc_status', approvedUser, this.config);
+          this.getAllUsers();
+        },
+        rejectUser(user){
+          console.log()
+          console.log(user);
         }
+
     },
     created() {
         this.getAllUsers();
