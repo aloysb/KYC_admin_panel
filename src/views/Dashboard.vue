@@ -1,17 +1,19 @@
 <template>
-    <div>
-      <header class = 'header pt-3 pb-3 mb-9 blue darken-3'>
-        <h1 class = 'display-1'>Welcome to the dashboard</h1>
-        <v-btn v-on:click="logout" class = 'header__logout' color='error'>Logout</v-btn>
-      </header> 
-        <v-card max-width='1200px' class='mx-auto pa-12 mt-2'>
-            <v-row justify='space-between'>
-              <v-col cols = '3'>
+
+    <div class = "dashboard__wrapper">
+      <!-- HEADER -->
+        <v-btn v-on:click="logout" class = 'header__logout' color='error' >Logout</v-btn>
+      <v-row>
+      <v-col cols = '12' class = 'mx-auto ma-4 d-flex align-center justify-center pa-12'>
+        <v-card max-width='1200px' class='mx-auto pl-12 pr-12 pt-6 elevation-'>
+            <h1 class = 'display-1 align-left light-blue darken-2 pa-2 white--text mb-4'>KYC User Datable</h1>
+            <v-row class='d-flex space-between'>
+              <v-col cols = '3' class='text-left'>
 
                 <!-- ADD NEW USER FORM -->
                 <v-dialog persistent v-model='newUserForm' max-width='600px'>
                     <template v-slot:activator="{ on }">
-                        <v-btn color="primary" dark v-on="on">+ Create new user</v-btn>
+                        <v-btn color="primary" dark v-on="on" x-large>+ Create new user</v-btn>
                     </template>
                     <v-card>
                         <v-form class='elevation-7 px-12 py-6'>
@@ -28,13 +30,13 @@
                     </v-card>
                 </v-dialog>
               </v-col>
-              <v-col cols= '6'>
+              <v-col offset = '3' cols= '6'>
 
                 <!-- SEARCH FIELD -->
                 <v-text-field v-model="search" append-icon="mdi-magnify" label="Search user" single-line hide-details></v-text-field>
               </v-col>
             </v-row>
-            <v-data-table :items='this.users' :headers='this.dataHeaders' :search='this.search'>
+            <v-data-table :items='this.users' :headers='this.dataHeaders' :search='this.search' loading loading-text="Loading... Please wait">
 
               <!-- EDITABLE REJECTED REASON -->
                 <template v-slot:item.rejected_reason="props">
@@ -51,20 +53,22 @@
 
                 <!-- STATUS COLOR -->
                     <template v-slot:item.passed="{ item }">
-      <v-chip :color="getColor(item.passed)" dark></v-chip>
+      <v-chip :color="getColor(item.passed)" dark>{{(item.passed == 0)? 'R':'A'}}</v-chip>
     </template>
 
               <!-- APPROVED OR REJECT BUTTON -->
                 <template v-slot:item.actions="{ item }">
-                    <v-icon small class="mr-2" @click="approveUser(item)" :large='true'>
+                    <v-icon large class="mr-2" color='green' @click="approveUser(item)" >
                         mdi-account-check
                     </v-icon>
-                    <v-icon small @click="rejectUser(item)">
+                    <v-icon  large color='red' @click="rejectUser(item)">
                         mdi-account-cancel
                     </v-icon>
                 </template>
             </v-data-table>
         </v-card>
+      </v-col>
+    </v-row>
  <!--        <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
       {{ snackText }}
       <v-btn text @click="snack = false">Close</v-btn>
@@ -108,6 +112,9 @@ export default {
                     text: 'Email',
                     value: 'email'
                 }, {
+                  text: 'Updated',
+                  value: 'last_update'
+                }, {
                     text: 'Status',
                     value: 'passed'
                 }, {
@@ -116,7 +123,7 @@ export default {
                 }, {
                     text: 'Action',
                     value: 'actions'
-                }
+                },
             ]
         }
     },
@@ -190,17 +197,26 @@ export default {
 }
 </script>
 <style sccoped>
-  .header{
-    color: #eee;
+
+  .dashboard__wrapper{
+    min-height: 100vh;
+    width: 100vw;
+    background: #136a8a;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #267871, #136a8a);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #267871, #136a8a); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
   }
+
+/*  .header{
+    background: rgba(0, 172, 193,0.3)
+  }*/
 
   .header__logout{
     position: absolute;
     right: 0;
     top: 0;
     margin: 1em;
-    font-weight: 700;
-  }
+}
 
   /*Data table*/
   table{
