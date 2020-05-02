@@ -2,7 +2,7 @@
     <div>
       <header class = 'header pt-3 pb-3 mb-9 blue darken-3'>
         <h1 class = 'display-1'>Welcome to the dashboard</h1>
-        <v-btn v-on:click="logout" class = 'header__logout' color='error' text>Logout</v-btn>
+        <v-btn v-on:click="logout" class = 'header__logout' color='error'>Logout</v-btn>
       </header> 
         <v-card max-width='1200px' class='mx-auto pa-12 mt-2'>
             <v-row justify='space-between'>
@@ -199,14 +199,7 @@ export default {
     right: 0;
     top: 0;
     margin: 1em;
-    border: 1px red solid;
-    font-weight: 900;
-    transition: 100ms ease-in-out;
-  }
-
-  .header__logout:hover{
-    background: rgba(255,0,0,0.2);
-    transform: scale(1.03);
+    font-weight: 700;
   }
 
   /*Data table*/
