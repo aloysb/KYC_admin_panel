@@ -34,18 +34,12 @@ export default {
     methods: {
         submit() {
             this.badCredentials = false;
-            //Add to use cors-anywhere to allow for CORS. We might have to fix that.
             axios.post('https://kyc.to.wtf/api/admin/login',{ "email": this.email,
               "password": this.password})
               .then(res => console.log('TOKEN ' + res.data.token))
-              .catch(() => this.badCredentials = true)
-            // console.log(this.email)
-            // if (this.email == "email" & this.password == "admin123"){
-            //   this.badCredentials = false;
-            //   this.$emit('logged-in');
-            // } else {
-            //   this.badCredentials = true;
-            
+              .catch(err => {
+                console.log(err);
+                this.badCredentials = true});
         }
     }
 }
