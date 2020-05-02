@@ -1,6 +1,9 @@
 <template>
     <div>
-        <h1 class = 'display-1 pt-3 pb-3 mb-9 blue darken-3'>Welcome to the dashboard</h1>
+      <header class = 'header pt-3 pb-3 mb-9 blue darken-3'>
+        <h1 class = 'display-1'>Welcome to the dashboard</h1>
+        <v-btn v-on:click="logout" class = 'header__logout' color='error' text>Logout</v-btn>
+      </header> 
         <v-card max-width='1200px' class='mx-auto pa-12 mt-2'>
             <v-row justify='space-between'>
               <v-col cols = '3'>
@@ -28,7 +31,7 @@
               <v-col cols= '6'>
 
                 <!-- SEARCH FIELD -->
-                <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line hide-details></v-text-field>
+                <v-text-field v-model="search" append-icon="mdi-magnify" label="Search user" single-line hide-details></v-text-field>
               </v-col>
             </v-row>
             <v-data-table :items='this.users' :headers='this.dataHeaders' :search='this.search'>
@@ -48,12 +51,12 @@
 
                 <!-- STATUS COLOR -->
                     <template v-slot:item.passed="{ item }">
-      <v-chip :color="getColor(item.passed)" dark>{{ item.passed }}</v-chip>
+      <v-chip :color="getColor(item.passed)" dark></v-chip>
     </template>
 
               <!-- APPROVED OR REJECT BUTTON -->
                 <template v-slot:item.actions="{ item }">
-                    <v-icon small class="mr-2" @click="approveUser(item)">
+                    <v-icon small class="mr-2" @click="approveUser(item)" :large='true'>
                         mdi-account-check
                     </v-icon>
                     <v-icon small @click="rejectUser(item)">
@@ -92,6 +95,7 @@ export default {
             newUserForm: false,
             search: '',
             snack: false,
+
             dataHeaders: [{
                     text: 'Last Name',
                     value: 'last_name'
@@ -127,12 +131,11 @@ export default {
                 .catch(err => console.log(err));
         },
         createNewUser() {
-            // !!! this.newUser needs to be filled via a form, this is for development purpose only/
             axios.post('https://kyc.to.wtf/api/admin/new_user', this.newUser, this.config)
                 .then(res => {
                     // Error handling needs to display something to the user
                     if (res.status != 200) throw Error;
-                    console.log('New users succesfully created')
+                    console.log('New user succesfully created')
                     //Close the form
                     this.newUserForm = false;
                     //Fetch the users again.
@@ -158,7 +161,6 @@ export default {
             }
 
             axios.put('https://kyc.to.wtf/api/admin/kyc_status', rejectedUser, this.config);
-            console.log(user.first_name + ' ' + user.last_name + ' Has been rejected for ' + user.rejected_reason)
             this.getAllUsers();
         },
         save(user) {
@@ -168,9 +170,17 @@ export default {
             // this.snackColor = 'success'
             // this.snackText = 'Data saved'
         },
-        cancel() {},
+        cancel() {
+          //Nothing
+        },
+
         getColor(status){
           return (status != 0)? "green":"red"
+        },
+
+        logout(){
+          this.$emit('logged-out');
+          this.$router.push('/');
         }
 
     },
@@ -180,7 +190,53 @@ export default {
 }
 </script>
 <style sccoped>
-  h1{
+  .header{
     color: #eee;
   }
+
+  .header__logout{
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 1em;
+    border: 1px red solid;
+    font-weight: 900;
+    transition: 100ms ease-in-out;
+  }
+
+  .header__logout:hover{
+    background: rgba(255,0,0,0.2);
+    transform: scale(1.03);
+  }
+
+  /*Data table*/
+  table{
+    margin-top: 1em;
+    border-radius: 10px;
+    border: .5px solid #aaa;
+  }
+
+  tr{
+        border-radius: 10px;
+  }
+  .v-data-table-header th{
+    align-content: center;
+    justify-content: center;
+    font-size: 1rem;
+    background: #E3F2FD;
+    border-top: .5px solid #aaa;
+    border-bottom: 1px solid #aaa;
+  }
+
+   .v-data-table-header th:first-child{
+            border-radius: 10px 0 0 0;
+        border-left: .5px solid #aaa;
+
+   }
+
+      .v-data-table-header th:last-child{
+        border-radius: 0 10px 0 0;
+        border-right: .5px solid #aaa;
+
+   }
 </style>
