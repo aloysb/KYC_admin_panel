@@ -1,10 +1,12 @@
 <template>
     <div class="dashboard__wrapper">
-        <!-- HEADER -->
+        <!-- HEADER LOGOUT-->
         <v-btn v-on:click="logout" class='header__logout' color='error'>Logout</v-btn>
         <v-row>
             <v-col cols='12' class='mx-auto ma-4 d-flex align-center justify-center pa-12'>
+                <!-- MAIN CARD -->
                 <v-card min-width='100%' max-width='1200px' class='mx-auto pl-12 pr-12 pt-6 elevation-10 align-self-stretch'>
+                    <!-- CARD TITLE -->
                     <h1 class='display-1 align-left light-blue darken-2 pa-2 white--text mb-4'>KYC User Datable</h1>
                     <v-row class='d-flex space-between'>
                         <v-col cols='3' class='text-left'>
@@ -146,16 +148,32 @@ export default {
                 .catch(err => console.log(err));
         },
         createNewUser() {
-            axios.post('https://kyc.to.wtf/api/admin/new_user', this.newUser, this.config)
-                .then(res => {
-                    // Error handling needs to display something to the user
-                    if (res.status != 200) throw Error;
-                    console.log('New user succesfully created')
-                    //Close the form
-                    this.newUserForm = false;
-                    //Fetch the users again.
-                    this.getAllUsers()
-                })
+          //BASIC DATA VALIDATION => Does not check for the type of data and does not do any sanitazition
+            if (this.newUser.email.length == 0){
+                this.snack = true
+                this.snackColor = 'error'
+                this.snackText = `Please enter email.`
+            } else if (this.newUser.last_name.length == 0 || this.newUser.first_name == 0){
+                  this.snack = true
+                this.snackColor = 'error'
+                this.snackText = `Please enter first name and last name`
+            } else {
+                axios.post('https://kyc.to.wtf/api/admin/new_user', this.newUser, this.config)
+                    .then(res => {
+                        // Error handling needs to display something to the user
+                        if (res.status != 200) throw Error;
+                        //Close the form
+                        this.newUserForm = false;
+                        //Fetch the users again.
+                        this.getAllUsers()
+                    })
+                    .then(() => {
+                        this.snack = true;
+                        this.snackColor = 'success';
+                        this.snackText = 'User created!';
+                      })
+                    .catch(err => console.log(err));
+            }
         },
         approveUser(user) {
             const approvedUser = {
