@@ -24,19 +24,21 @@ I did not want to spend time on this but we change it to match client's colors.
 #TODO
 ## APP
 [ ] Redirect back to login page if JWT expires or is empty
-[ ] Deploy the app on github pages
+[X] Deploy the app on github pages
 [ ] Write README
+[ ] Change favicon
 
 ## DASHBOARD
 ### DASHBOARD.vue view
 [ ] Refactor by creating components.
-[X] Approve/Reject Button should be in separate columns.
-[ ] Sucess message on creating a new user (snack-bar)
+[x] Approve/Reject Button should be in separate columns.
+[x] Sucess message on creating a new user (snack-bar)
 [x] Change status from 0/1 to icon (
 'checked' and 'X')
 [x] Format last updated
 
 ### Create user
-[ ] Add validation
+[x] Add validation
+[ ] Add better validation
 [x] Make it in a modal pop up
 [x] Make icon for approve/reject larger 
