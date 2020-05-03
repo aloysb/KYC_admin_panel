@@ -5,7 +5,7 @@
         <v-btn v-on:click="logout" class = 'header__logout' color='error' >Logout</v-btn>
       <v-row>
       <v-col cols = '12' class = 'mx-auto ma-4 d-flex align-center justify-center pa-12'>
-        <v-card max-width='1200px' class='mx-auto pl-12 pr-12 pt-6 elevation-'>
+        <v-card min-width = '100%' max-width='1200px' class='mx-auto pl-12 pr-12 pt-6 elevation-10 align-self-stretch'>
             <h1 class = 'display-1 align-left light-blue darken-2 pa-2 white--text mb-4'>KYC User Datable</h1>
             <v-row class='d-flex space-between'>
               <v-col cols = '3' class='text-left'>
@@ -36,7 +36,14 @@
                 <v-text-field v-model="search" append-icon="mdi-magnify" label="Search user" single-line hide-details></v-text-field>
               </v-col>
             </v-row>
-            <v-data-table :items='this.users' :headers='this.dataHeaders' :search='this.search' loading loading-text="Loading... Please wait">
+
+            <!--start of data table--->
+            <v-data-table :items='this.users' :headers='this.dataHeaders' :search='this.search' loading=false loading-text="Loading... Please wait" sortBy="last_name">
+
+              <!-- Format last update date -->
+              <template v-slot:item.last_update="{ item }">
+                <p>{{formatDate(item.last_update)}}</p>
+              </template>
 
               <!-- EDITABLE REJECTED REASON -->
                 <template v-slot:item.rejected_reason="props">
@@ -57,10 +64,12 @@
     </template>
 
               <!-- APPROVED OR REJECT BUTTON -->
-                <template v-slot:item.actions="{ item }">
+                <template v-slot:item.reject="{ item }">
                     <v-icon large class="mr-2" color='green' @click="approveUser(item)" >
                         mdi-account-check
                     </v-icon>
+                </template>
+                <template v-slot:item.approve="{ item }">
                     <v-icon  large color='red' @click="rejectUser(item)">
                         mdi-account-cancel
                     </v-icon>
@@ -69,14 +78,15 @@
         </v-card>
       </v-col>
     </v-row>
- <!--        <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
+    <v-snackbar v-model="snack" :timeout="3000" :color="snackColor" top>
       {{ snackText }}
       <v-btn text @click="snack = false">Close</v-btn>
-    </v-snackbar> -->
+    </v-snackbar>
     </div>
 </template>
 <script>
 import axios from 'axios';
+import moment from 'moment';
 
 export default {
     name: 'Dashboard',
@@ -99,7 +109,9 @@ export default {
             newUserForm: false,
             search: '',
             snack: false,
-
+            snackColor: 'green',
+            snackText: 'Hello world',
+            loading: true,
             dataHeaders: [{
                     text: 'Last Name',
                     value: 'last_name'
@@ -116,13 +128,16 @@ export default {
                   value: 'last_update'
                 }, {
                     text: 'Status',
-                    value: 'passed'
+                    value: 'passed',
                 }, {
                     text: 'Reason for rejection',
                     value: 'rejected_reason'
                 }, {
-                    text: 'Action',
-                    value: 'actions'
+                    text: '',
+                    value: 'approve'
+                }, {
+                    text: '',
+                    value: 'reject'
                 },
             ]
         }
@@ -135,6 +150,7 @@ export default {
                     if (res.status != 200) throw Error;
                     this.users = res.data.items;
                 })
+                .then(this.loading = false)
                 .catch(err => console.log(err));
         },
         createNewUser() {
@@ -156,8 +172,15 @@ export default {
                 "rejected_reason": ""
             }
 
-            axios.put('https://kyc.to.wtf/api/admin/kyc_status', approvedUser, this.config);
-            this.getAllUsers();
+
+            axios.put('https://kyc.to.wtf/api/admin/kyc_status', approvedUser, this.config)
+            .then(() => {
+            this.snack = true
+            this.snackColor = 'success'
+            this.snackText = `${user.first_name} ${user.last_name} approved!`
+            })
+            .then(() => this.getAllUsers())
+            .catch(err => console.log(err))
         },
         rejectUser(user) {
             console.log(user.rejected_reason);
@@ -167,18 +190,32 @@ export default {
                 "rejected_reason": `${user.rejected_reason}`
             }
 
-            axios.put('https://kyc.to.wtf/api/admin/kyc_status', rejectedUser, this.config);
-            this.getAllUsers();
+            axios.put('https://kyc.to.wtf/api/admin/kyc_status', rejectedUser, this.config).
+            then(() => {
+               this.snack = true
+                this.snackColor = 'error'
+                this.snackText = `${user.first_name} ${user.last_name} rejected!`
+            }).then(() => this.getAllUsers())
+            .catch(err => console.log(err))
         },
+        formatDate(date){
+          return moment(date).fromNow()
+        },
+
         save(user) {
-            this.rejectUser(user);
-            this.getAllUsers();
-            // this.snack = true
-            // this.snackColor = 'success'
-            // this.snackText = 'Data saved'
+            this.rejectUser(user).
+            then(() => {
+              this.snack = true
+              this.snackColor = 'success'
+              this.snackText = 'Data saved'
+            }).then(()=> this.getAllUsers())
+                        .catch(err => console.log(err))
+
         },
         cancel() {
-          //Nothing
+          this.snack = true;
+          this.snackColor = 'error';
+          this.snackText = 'Reason for rejection not saved.'
         },
 
         getColor(status){
@@ -231,11 +268,16 @@ background: linear-gradient(to right, #267871, #136a8a); /* W3C, IE 10+/ Edge, F
   .v-data-table-header th{
     align-content: center;
     justify-content: center;
-    font-size: 1rem;
+    font-size: .8rem;
     background: #E3F2FD;
+    padding: 0;
     border-top: .5px solid #aaa;
     border-bottom: 1px solid #aaa;
   }
+
+   .v-application--is-ltr .v-data-table th{
+          text-align: center !important;
+    }
 
    .v-data-table-header th:first-child{
             border-radius: 10px 0 0 0;
